@@ -1,0 +1,9 @@
+Information on buying materials::
+
+RASPBERRY PI INTEGRATION:
+
+What I've learned so far:
+  1. Sound card are to convert analog signal to digital signals.
+  2. Simple microphone creates analog signal.
+  3. GPIO pins maybe used!
+  4. Sound card or microphone, the data can be utilized by python.
