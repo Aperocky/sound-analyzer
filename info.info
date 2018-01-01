@@ -7,3 +7,5 @@ What I've learned so far:
   2. Simple microphone creates analog signal.
   3. GPIO pins maybe used!
   4. Sound card or microphone, the data can be utilized by python.
+
+recordlength 
