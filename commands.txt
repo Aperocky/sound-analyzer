@@ -1,5 +1,0 @@
-./analyze.py OV2PASSFULL.npy 44100 15 OV2PASSFULL.npy 2
-./analyze.py 50mRudimentaryTest/50mheight_hang.npy 44100 1
-./analyze.py 50mRudimentaryTest/50mheight_hang.npy 44100 30
-./analyze.py 50mRudimentaryTest/50mheight_passover.npy 44100 15
-
