@@ -1,3 +1,4 @@
 *.npy
+documents/
 __pycache__/
 soundfiles/
