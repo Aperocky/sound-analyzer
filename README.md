@@ -16,7 +16,7 @@ The script takes in two[,three] arguments, in following order:
 
 <code>length</code> is an int which describe how many seconds this recording will be.
 
-<code>fs</code> is optional, where you specify the sampling frequency, the default sampling frequency is 44100. 
+<code>fs</code> is optional, where you specify the sampling frequency, the default sampling frequency is 44100.
 
 ## <code>analyze.py</code>
 
@@ -26,3 +26,6 @@ To run: <code>analyze.py filename</code>
 
 <code>filename</code> is a string pointing to the data file you want to analyze. default frequency is 44100.
 
+## <code>analyze_time.py</code>
+
+This script will take audio data and analyze its frequency as parts of time - this will be useful to analyze data

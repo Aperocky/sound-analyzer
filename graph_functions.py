@@ -11,13 +11,19 @@ def load_npy(filename):
     return np.load(filename)
 
 # Initiate pyplot image with ax.
-def init_image():
+def init_image(xlabel = 'Frequency: Hz', ylabel = 'Power Density'):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.grid(True)
-    ax.set_xlabel('Frequency: Hz')
-    ax.set_ylabel('Power Density')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     return ax
+
+# Get the twinx
+def get_twinx(ax):
+    ax2 = ax.twinx()
+    # ax2.grid(True)
+    return ax2
 
 # Given a graph, plot it onto the ax object in a semilog way
 def semi_graph(ax, x, y, c = 'r', label = ''):
