@@ -95,6 +95,13 @@ def guesswork(frequency, psdarray, peaklist, peaksdex):
     output = np.array(output)
     return output
 
+def run(audio):
+    f, psd = aa.spectrum(audio)
+    peaklist = peak_map(psd)
+    peaksdex = peak_assign(peaklist)
+    output = guesswork(f, psd, peaklist, peaksdex)
+    return output
+
 if __name__ == '__main__':
     filename = sys.argv[1]
     parts = 1
@@ -104,10 +111,7 @@ if __name__ == '__main__':
     # Get the shorter audio pack
     audiolist = np.array_split(au, parts)
     for audio in audiolist:
-        f, psd = aa.spectrum(audio)
-        peaklist = peak_map(psd)
-        peaksdex = peak_assign(peaklist)
-        output = guesswork(f, psd, peaklist, peaksdex)
+        output = run(audio)
         # for each in output:
         #     print(each)
         ax = gf.init_image(ylabel = 'POWER')
