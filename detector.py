@@ -11,20 +11,21 @@ import audio_algorithms as aa
 import harmonics
 from threading import Thread
 
-def record(interval = 5, fs=44100):
-    duration = int(interval)
+def record(name = 'output', index = 0, interval = 5, fs=44100):
+    print('RECORDING %d TH INTERVAL' % index)
+    duration = float(interval)
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, blocking = False)
     for i in range(int(interval)):
         sys.stdout.write('\r%d seconds elapsed' % (i+1))
         sys.stdout.flush()
         time.sleep(1)
     recording = recording[:, 0]
+    np.save('%s%d' % (name, index), recording)
     return recording
 
 def analyze(recording, all_output):
     print('Analyzing..')
     output = harmonics.run(recording)
-    
     all_output.append(output)
 
 if __name__ == '__main__':
@@ -36,6 +37,9 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         interval = float(sys.argv[2])
     real_interval = interval * 0.8
+    name = 'output'
+    if len(sys.argv) > 3:
+        name = sys.argv[3]
 
     # Start process
     start = datetime.datetime.now()
@@ -44,6 +48,7 @@ if __name__ == '__main__':
 
     deltas = []
     all_output = []
+    index = 0
     # Loop
     while(True):
         now = datetime.datetime.now()
@@ -53,10 +58,11 @@ if __name__ == '__main__':
         print(now.strftime("%Y-%m-%d %H:%M:%S:%f"))
         delta = now - start
         deltas.append(delta)
-        recording = record(interval = real_interval)
+        recording = record(name = name, index = index, interval = real_interval)
+        index += 1
         thread = Thread(target = analyze, args = (recording, all_output, ))
         thread.start()
 
     all_output = np.asarray(all_output)
-    np.save('output%s' % str(datetime.datetime.now()), all_output)
+    np.save('%s%s' % (name, str(datetime.datetime.now())), all_output)
     thread.join()
