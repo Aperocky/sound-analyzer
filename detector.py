@@ -27,6 +27,7 @@ def analyze(recording, all_output):
     print('Analyzing..')
     output = harmonics.run(recording)
     all_output.append(output)
+    # print(len(all_output))
 
 if __name__ == '__main__':
 
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     interval = 5
     if len(sys.argv) > 2:
         interval = float(sys.argv[2])
-    real_interval = interval * 0.8
+    real_interval = interval
     name = 'output'
     if len(sys.argv) > 3:
         name = sys.argv[3]
@@ -60,9 +61,11 @@ if __name__ == '__main__':
         deltas.append(delta)
         recording = record(name = name, index = index, interval = real_interval)
         index += 1
+        if index == 1:
+            continue
         thread = Thread(target = analyze, args = (recording, all_output, ))
         thread.start()
 
+    thread.join()
     all_output = np.asarray(all_output)
     np.save('%s%s' % (name, str(datetime.datetime.now())), all_output)
-    thread.join()
