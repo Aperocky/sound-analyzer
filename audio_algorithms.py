@@ -4,6 +4,7 @@ import os, sys
 cdir = os.getcwd()
 sys.path.append(cdir)
 from scipy import signal
+from operator import itemgetter
 
 # Load numpy (audio) files
 def load_npy(filename):
@@ -64,3 +65,31 @@ def fft(nparray):
     nfreq[100:-100] = freq
     psd = np.sqrt(np.abs((nfreq[half])**2 + (nfreq[-half])**2))
     return psd
+
+# Identify a drone from the result of harmonics - CORE.
+def identify(result):
+    av_power = np.sum(result[:,1])/result.shape[0]
+    av_match = np.sum(result[:,2])/result.shape[0]
+    mask = result[:, 2] > 4 + av_match
+    # print(peaks)
+    if np.sum(mask) < 1:
+        return False
+    selected = result[mask]
+    mask = selected[:, 1] > av_power + 30
+    if np.sum(mask) < 1:
+        return False
+    selected = selected[mask]
+    quants = []
+    for each in selected:
+        quant = (each[1]-av_power) * each[2]
+        quants.append((each[0], quant))
+    print(quants)
+    strong = max(quants, key=itemgetter(1))
+    return strong
+
+# Print out identify's output
+def print_identify(result):
+    if not result:
+        print('No drone is detected')
+    else:
+        print('Harmonics detected at %.02f, Strength %.02f' % (result[0], result[1]))
