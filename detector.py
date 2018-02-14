@@ -24,8 +24,9 @@ def record(name = 'output', index = 0, interval = 5, fs=44100):
     return recording
 
 def analyze(recording, all_output):
-    print('Analyzing..')
+    print('\nAnalyzing.. ')
     output = harmonics.run(recording)
+    aa.print_identify(aa.identify(output))
     all_output.append(output)
     # print(len(all_output))
 

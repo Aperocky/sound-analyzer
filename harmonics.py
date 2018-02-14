@@ -30,7 +30,7 @@ def find_nearest(frequency, values):
 # Peak_calculation.
 def peak_calc(psdarray, index):
     # print(index)
-    irange = 4 + int(index/50)
+    irange = 4
     left_bound = index-irange
     right_bound = index+irange
     maxi = max(psdarray[index-irange:index+irange])
@@ -49,8 +49,8 @@ def peak_calc(psdarray, index):
 
 # Map
 def peak_map(psdarray):
-    peaklist = np.zeros(5)
-    for i in range(5,len(psdarray)-50):
+    peaklist = np.zeros(10)
+    for i in range(10,len(psdarray)-50):
         peaklist = np.append(peaklist,peak_calc(psdarray, i))
     padding = np.zeros(50)
     peaklist = np.append(peaklist, padding)
@@ -60,7 +60,7 @@ def peak_map(psdarray):
 def peak_assign(peaklist):
     peaks = []
     for i in range(len(peaklist)):
-        if i < 5:
+        if i < 10:
             continue
         if i > len(peaklist) - 5:
             break
@@ -71,7 +71,7 @@ def peak_assign(peaklist):
 
 # Complete the guess work and return an array of frequency checked.
 def guesswork(frequency, psdarray, peaklist, peaksdex):
-    guess = np.arange(130, 170, 0.25)
+    guess = np.arange(135, 160, 0.25)
     output = []
     for each in guess:
         loudness = 0
@@ -97,10 +97,29 @@ def guesswork(frequency, psdarray, peaklist, peaksdex):
 
 def run(audio):
     f, psd = aa.spectrum(audio)
-    peaklist = peak_map(psd)
-    peaksdex = peak_assign(peaklist)
+    peaklist = aa.peak_map(psd)
+    peaksdex = aa.peak_assign(peaklist)
     output = guesswork(f, psd, peaklist, peaksdex)
+    # print(aa.print_identify(aa.identify(output)))
     return output
+
+def runfromfft(f, psd):
+    peaklist = aa.peak_map(psd)
+    peaksdex = aa.peak_assign(peaklist)
+    output = guesswork(f, psd, peaklist, peaksdex)
+    print(aa.print_identify(aa.identify(output)))
+    return aa.identify(output)
+
+def runfromfft_graph(f, psd):
+    peaklist = aa.peak_map(psd)
+    peaksdex = aa.peak_assign(peaklist)
+    output = guesswork(f, psd, peaklist, peaksdex)
+    ax = gf.init_image(ylabel = 'POWER')
+    gf.std_graph(ax, output[:, 0], output[:, 1])
+    ax2 = gf.get_twinx(ax)
+    gf.std_graph(ax2, output[:, 0], output[:, 2], c='r')
+    plt.show()
+    print(aa.print_identify(aa.identify(output)))
 
 if __name__ == '__main__':
     filename = sys.argv[1]
@@ -115,7 +134,7 @@ if __name__ == '__main__':
         # for each in output:
         #     print(each)
         ax = gf.init_image(ylabel = 'POWER')
-        gf.std_graph(ax, output[:, 0], output[:, 1])
+        gf.std_graph(ax, output[:, 0], output[:, 1]-120)
         ax2 = gf.get_twinx(ax)
         gf.std_graph(ax2, output[:, 0], output[:, 2], c='r')
         plt.show()

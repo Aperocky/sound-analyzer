@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import numpy as np
 import os, sys
-cdir = os.getcwd()
-sys.path.append(cdir)
+thisdir = os.path.abspath('engines')
+sys.path.append(thisdir)
 import graph_functions as gf
 import audio_algorithms as aa
 from matplotlib import pyplot as plt
@@ -18,8 +18,8 @@ def peak_calcc(psdarray, index):
     return psdarray[index]**2/mincons/maxi
 
 def peak_calc(psdarray, index):
-    # print(index)
-    irange = 4
+    # irange is the range of interest.
+    irange = 6
     left_bound = index-irange
     right_bound = index+irange
     maxi = max(psdarray[index-irange:index+irange])
@@ -34,12 +34,16 @@ def peak_calc(psdarray, index):
         minright = psdarray[right_bound]
         right_bound += 1
     mincons = max(minleft, minright)
-    return psdarray[index]**2/mincons/maxi
+    peakstrength = psdarray[index]**2/mincons/maxi
+    if peakstrength > 100:
+        peakstrength = 100
+    return peakstrength
 
 # Map
 def peak_map(psdarray):
-    peaklist = np.zeros(5)
-    for i in range(5,len(psdarray)-50):
+    irange = 8
+    peaklist = np.zeros(irange + 2)
+    for i in range(irange + 2,len(psdarray)-50):
         peaklist = np.append(peaklist,peak_calc(psdarray, i))
     padding = np.zeros(50)
     peaklist = np.append(peaklist, padding)
@@ -53,6 +57,9 @@ def peak_assign(peaklist):
             continue
         if i > len(peaklist) - 5:
             break
+        if peaklist[i] == 100:
+            peaks.append(i)
+            continue
         if peaklist[i] > 1 and peaklist[i] > peaklist[i-1] and peaklist[i] > peaklist[i+1]:
             peaks.append(i)
     peaks = np.asarray(peaks)
@@ -64,7 +71,16 @@ def peak_impose(ax, frequency, peaklist):
     ax2 = ax.twinx()
     gf.std_graph(ax2, frequency[x], peaklist, c = 'b')
     peaksdex = peak_assign(peaklist)
-    gf.button_grapher(ax2, f, peaksdex, peaklist)
+    gf.button_grapher(ax2, frequency, peaksdex, peaklist)
+
+def runfromfft(f, psd):
+    ax = gf.init_image()
+    gf.semi_graph(ax, f, psd)
+    maxdex = aa.max_range(psd, 20)
+    # gf.button_grapher(ax, f, maxdex, psd)
+    peaklist = aa.peak_map(psd)
+    aa.peak_impose(ax, f, peaklist)
+    plt.show()
 
 if __name__ == '__main__':
     filename = sys.argv[1]
@@ -75,6 +91,7 @@ if __name__ == '__main__':
     gf.semi_graph(ax, f, psd, label = filename)
     maxdex = aa.max_range(psd, 20)
     # gf.button_grapher(ax, f, maxdex, psd)
-    peaklist = peak_map(psd)
-    peak_impose(ax, f, peaklist)
+    peaklist = aa.peak_map(psd)
+    # aa.peak_impose(ax, f, peaklist)
+    plt.savefig('%s.png' % filename.split('.')[0])
     plt.show()

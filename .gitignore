@@ -1,4 +1,7 @@
 *.npy
+goals
+Progress/
+test*
 documents/
 __pycache__/
 soundfiles/
