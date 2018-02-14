@@ -59,3 +59,24 @@ def pin_grapher(ax, frequency, maxdex, background, audio):
 
 def show():
     plt.show()
+
+def plotnormal(ax, x, u, sigma, c = 'g', label = '', lw = 1):
+    ax.plot(x, stats.norm.pdf(x, u, sigma), color=c, label=label, linewidth=lw)
+
+def save(name):
+    plt.savefig(name, dpi=120)
+
+def plotaligned(ax, matrix, c = 'r', label = ''):
+    y = matrix.flatten()
+    x = (np.indices(matrix.shape)[0]).flatten()
+    x += 1
+    ax.set_xlim(0, max(x)+1)
+    ax.set_ylim(np.amin(matrix) - 5, np.amax(matrix) + 5)
+    ax.scatter(x, y, color = c, label = label)
+
+def plotbox(ax, data, names = [], xlabel = '', ylabel = ''):
+    ax.boxplot(data)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel)
+    if len(names) == len(data):
+        plt.xticks(np.arange(len(names)), names)
