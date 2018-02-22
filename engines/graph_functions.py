@@ -60,6 +60,9 @@ def pin_grapher(ax, frequency, maxdex, background, audio):
 def show():
     plt.show()
 
+def plothist(ax, x, bins, c='b'):
+    ax.hist(x, bins, color = c)
+
 def plotnormal(ax, x, u, sigma, c = 'g', label = '', lw = 1):
     ax.plot(x, stats.norm.pdf(x, u, sigma), color=c, label=label, linewidth=lw)
 

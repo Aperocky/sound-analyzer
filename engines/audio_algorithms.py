@@ -14,6 +14,19 @@ import graph_functions as gf
 def load_npy(filename):
     return np.load(filename)
 
+# Split an file into multiple parts
+def split_files(filename, num):
+    data = np.load(filename)
+    totallength = int(len(data)/44100)
+    segmentlength = int(totallength/num)
+    i = 0
+    while(i < num - 1):
+        split = data[i*segmentlength*44100: (i+1)*segmentlength*44100]
+        print(len(split))
+        np.save('{}_{}'.format(filename, i), split)
+        i += 1
+    np.save('{}_{}'.format(filename, i), data[i*segmentlength*44100:])
+
 # Have a generator that yield seperate files from one master file.
 def split_seconds(filename, length = 44100*4, split_length = 44100):
     data = np.load(filename, 'r')

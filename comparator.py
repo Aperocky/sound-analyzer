@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 import os, sys
-cdir = os.getcwd()
-sys.path.append(cdir)
+sys.path.append('/Users/aperocky/workspace/Labwork/Drone_Project/Audio-detection/engines')
 import graph_functions as gf
 import audio_algorithms as aa
 from matplotlib import pyplot as plt

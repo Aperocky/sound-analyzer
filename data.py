@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 import os, sys
-cdir = os.getcwd()
-sys.path.append(cdir)
+sys.path.append('/Users/aperocky/workspace/Labwork/Drone_Project/Audio-detection/engines')
 import graph_functions as gf
 import audio_algorithms as aa
 import harmonics
@@ -49,22 +48,28 @@ import matplotlib.pyplot as plt
 # print('Average of standard deviations of MATCHES: %.02f' % av_std_match)
 
 fname = sys.argv[1]
-index = 0
-result = []
-while(True):
-    if not os.path.isfile('%s%d.npy' % (fname, index)):
-        break
-    data = np.load('%s%d.npy' % (fname, index))
-    print('%dTH    ' % index, end=' ')
-    # fftfreq.run('%s%d.npy' % (fname, index))
-    if index == 50:
-        break
-    intervaldata = harmonics.run(data)
-    intervaldata = aa.identify(intervaldata)
-    print(intervaldata)
-    result.append(intervaldata)
-    index += 1
+# index = 0
+# result = []
+# while(True):
+#     if not os.path.isfile('%s%d.npy' % (fname, index)):
+#         break
+#     data = np.load('%s%d.npy' % (fname, index))
+#     print('%dTH    ' % index, end=' ')
+#     # fftfreq.run('%s%d.npy' % (fname, index))
+#     if index == 50:
+#         break
+#     intervaldata = harmonics.run(data)
+#     intervaldata = aa.identify(intervaldata)
+#     print(intervaldata)
+#     result.append(intervaldata)
+#     index += 1
 
+gen = aa.split_seconds(fname)
+result = []
+for each in gen:
+    intervaldata = harmonics.run(each)
+    intervaldata = aa.identify(intervaldata)
+    result.append(intervaldata)
 result = np.asarray(result)
 print(result)
 
@@ -77,7 +82,7 @@ def plotdots(ax, i, detect):
 print(np.average(result[:, 2]) - 120)
 print(np.average(result[:, 3]))
 
-ax = gf.init_image(xlabel = 'Intervals', ylabel = 'Power Rating', title = 'Background Test')
+ax = gf.init_image(xlabel = 'Intervals', ylabel = 'Power Rating', title = '')
 ax.set_ylim(-10, 200)
 i = 0
 tot = 0

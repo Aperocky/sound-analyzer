@@ -1,7 +1,6 @@
 import numpy as np
 import os, sys
-cdir = os.getcwd()
-sys.path.append(cdir)
+sys.path.append('/Users/aperocky/workspace/Labwork/Drone_Project/Audio-detection/engines')
 import harmonics
 import audio_algorithms as aa
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 import os, sys
-thisdir = os.path.abspath('engines')
-sys.path.append(thisdir)
+sys.path.append('/Users/aperocky/workspace/Labwork/Drone_Project/Audio-detection/engines')
 import graph_functions as gf
 import audio_algorithms as aa
 from matplotlib import pyplot as plt
@@ -84,14 +83,17 @@ def runfromfft(f, psd):
 
 if __name__ == '__main__':
     filename = sys.argv[1]
+    bandpass = []
+    if len(sys.argv) > 3:
+        lowerbound = int(sys.argv[2])
+        upperbound = int(sys.argv[3])
+        bandpass = [lowerbound, upperbound]
     audio = aa.load_npy(filename)
-    # audio -= np.mean(audio)
-    f, psd = aa.spectrum(audio)
+    bandpass = [80, 10000]
+    f, psd = aa.spectrum(audio, bandpass = bandpass)
     ax = gf.init_image()
     gf.semi_graph(ax, f, psd, label = filename)
-    maxdex = aa.max_range(psd, 20)
-    # gf.button_grapher(ax, f, maxdex, psd)
-    peaklist = aa.peak_map(psd)
-    # aa.peak_impose(ax, f, peaklist)
-    plt.savefig('%s.png' % filename.split('.')[0])
+    # maxdex = aa.max_range(psd, 20)
+    # peaklist = aa.peak_map(psd)
+    # plt.savefig('%s.png' % filename.split('.')[0])
     plt.show()
